@@ -179,6 +179,65 @@
     .tl-title { font-size: 1rem; font-weight: 600; }
     .tl-desc { font-size: 0.9rem; color: #8890cc; margin-top: 0.2rem; }
 
+    /* ── BOARD ── */
+    .board-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+    .board-write-btn {
+      padding: 0.5rem 1.2rem; border-radius: 8px; border: none;
+      background: linear-gradient(135deg, #6478ff, #00c8b4);
+      color: #fff; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+    }
+    .board-write-btn:hover { opacity: 0.85; }
+    .board-table { width: 100%; border-collapse: collapse; }
+    .board-table th {
+      padding: 0.7rem 1rem; font-size: 0.8rem; color: #6478ff;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      border-bottom: 1px solid rgba(100,120,255,0.2); text-align: left;
+    }
+    .board-table td { padding: 0.9rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; vertical-align: middle; }
+    .board-table tr:hover td { background: rgba(255,255,255,0.03); cursor: pointer; }
+    .board-title-cell { color: #e0e0f0; font-weight: 500; }
+    .board-title-cell:hover { color: #a0aaff; }
+    .board-author { color: #8890cc; font-size: 0.85rem; }
+    .board-date { color: #555577; font-size: 0.82rem; white-space: nowrap; }
+    .board-num { color: #555577; font-size: 0.82rem; width: 3rem; }
+    .board-del {
+      padding: 0.25rem 0.6rem; border-radius: 6px; border: 1px solid rgba(255,80,80,0.3);
+      background: transparent; color: #ff8888; font-size: 0.78rem; cursor: pointer; transition: all 0.2s;
+    }
+    .board-del:hover { background: rgba(255,80,80,0.15); }
+    .board-empty { text-align: center; color: #555577; font-size: 0.9rem; padding: 3rem 0; }
+    .board-pagination { display: flex; justify-content: center; gap: 0.4rem; margin-top: 1.2rem; }
+    .page-btn {
+      width: 32px; height: 32px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+      background: transparent; color: #8890cc; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+    }
+    .page-btn.active { background: rgba(100,120,255,0.25); border-color: rgba(100,120,255,0.5); color: #fff; }
+    .page-btn:hover:not(.active) { background: rgba(255,255,255,0.05); }
+
+    /* ── POST MODAL ── */
+    .post-modal {
+      background: #1a1a2e; border: 1px solid rgba(100,120,255,0.2);
+      border-radius: 20px; padding: 2rem; width: 100%; max-width: 600px;
+      max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .post-modal h2 { font-size: 1.3rem; color: #e0e0f0; margin-bottom: 0.5rem; line-height: 1.4; }
+    .post-modal-meta { font-size: 0.82rem; color: #8890cc; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .post-modal-body { font-size: 0.98rem; color: #c0c8e8; line-height: 1.9; white-space: pre-wrap; }
+    .write-modal {
+      background: #1a1a2e; border: 1px solid rgba(100,120,255,0.2);
+      border-radius: 20px; padding: 2rem; width: 100%; max-width: 560px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .write-modal h2 { font-size: 1.3rem; color: #a0aaff; margin-bottom: 1.5rem; }
+    .write-input {
+      width: 100%; padding: 0.75rem 1rem; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+      color: #e0e0f0; font-size: 0.95rem; font-family: inherit; outline: none;
+      transition: border-color 0.2s; margin-bottom: 0.8rem;
+    }
+    .write-input:focus { border-color: rgba(100,120,255,0.5); }
+    textarea.write-input { resize: vertical; min-height: 160px; }
+
     /* ── GUESTBOOK ── */
     .gb-form { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2rem; }
     .gb-form textarea {
@@ -242,6 +301,7 @@
     <a href="#about">소개</a>
     <a href="#skills">기술</a>
     <a href="#career">경력</a>
+    <a href="#board">게시판</a>
     <a href="#guestbook">방명록</a>
     <a href="#contact">연락처</a>
   </div>
@@ -356,6 +416,50 @@
   </div>
 </section>
 
+<!-- WRITE MODAL -->
+<div class="modal-overlay" id="writeOverlay">
+  <div class="write-modal">
+    <button class="modal-close" onclick="closeWrite()">×</button>
+    <h2>✏️ 글쓰기</h2>
+    <input class="write-input" type="text" id="postTitle" placeholder="제목을 입력하세요" />
+    <textarea class="write-input" id="postContent" placeholder="내용을 입력하세요..."></textarea>
+    <button class="submit-btn" onclick="submitPost()">등록</button>
+  </div>
+</div>
+
+<!-- POST VIEW MODAL -->
+<div class="modal-overlay" id="viewOverlay">
+  <div class="post-modal">
+    <button class="modal-close" onclick="closeView()">×</button>
+    <h2 id="viewTitle"></h2>
+    <div class="post-modal-meta" id="viewMeta"></div>
+    <div class="post-modal-body" id="viewBody"></div>
+  </div>
+</div>
+
+<!-- BOARD -->
+<section class="reveal" id="board" style="padding-top:0;">
+  <div class="board-header">
+    <h2 class="section-title" style="margin-bottom:0;">📋 게시판</h2>
+    <button class="board-write-btn" id="writeBtnTop" style="display:none" onclick="openWrite()">✏️ 글쓰기</button>
+  </div>
+  <table class="board-table">
+    <thead>
+      <tr>
+        <th style="width:3rem;">번호</th>
+        <th>제목</th>
+        <th style="width:10rem;">작성자</th>
+        <th style="width:7rem;">날짜</th>
+        <th style="width:3rem;"></th>
+      </tr>
+    </thead>
+    <tbody id="boardBody">
+      <tr><td colspan="5" class="board-empty">로딩 중...</td></tr>
+    </tbody>
+  </table>
+  <div class="board-pagination" id="boardPaging"></div>
+</section>
+
 <!-- GUESTBOOK -->
 <section class="reveal" id="guestbook" style="padding-top:0;">
   <h2 class="section-title">📝 방명록</h2>
@@ -394,6 +498,7 @@
     updateNav();
     renderGbForm();
     loadMessages();
+    loadPosts();
   });
 
   function updateNav() {
@@ -490,6 +595,95 @@
         <div class="gb-content">${m.content.replace(/</g,'&lt;')}</div>
       </div>`).join('');
   }
+
+  // ── Board ──
+  const PAGE_SIZE = 10;
+  let boardPage = 1;
+  let totalPosts = 0;
+
+  function updateWriteBtn() {
+    const btn = document.getElementById('writeBtnTop');
+    if (btn) btn.style.display = currentUser ? 'block' : 'none';
+  }
+
+  function openWrite() {
+    document.getElementById('postTitle').value = '';
+    document.getElementById('postContent').value = '';
+    document.getElementById('writeOverlay').classList.add('open');
+  }
+  function closeWrite() { document.getElementById('writeOverlay').classList.remove('open'); }
+  document.getElementById('writeOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeWrite(); });
+
+  function openView(post) {
+    document.getElementById('viewTitle').textContent = post.title;
+    document.getElementById('viewMeta').textContent = `${post.email}  ·  ${new Date(post.created_at).toLocaleDateString('ko-KR')}`;
+    document.getElementById('viewBody').textContent = post.content;
+    document.getElementById('viewOverlay').classList.add('open');
+  }
+  function closeView() { document.getElementById('viewOverlay').classList.remove('open'); }
+  document.getElementById('viewOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeView(); });
+
+  async function submitPost() {
+    const title   = document.getElementById('postTitle').value.trim();
+    const content = document.getElementById('postContent').value.trim();
+    if (!title || !content) { alert('제목과 내용을 입력하세요.'); return; }
+    const { error } = await sb.from('posts').insert({ user_id: currentUser.id, email: currentUser.email, title, content });
+    if (error) { alert('오류: ' + error.message); return; }
+    closeWrite();
+    boardPage = 1;
+    loadPosts();
+  }
+
+  async function deletePost(e, id) {
+    e.stopPropagation();
+    if (!confirm('삭제하시겠습니까?')) return;
+    const { error } = await sb.from('posts').delete().eq('id', id);
+    if (error) { alert('오류: ' + error.message); return; }
+    loadPosts();
+  }
+
+  async function loadPosts() {
+    const tbody = document.getElementById('boardBody');
+    const from  = (boardPage - 1) * PAGE_SIZE;
+    const to    = from + PAGE_SIZE - 1;
+
+    const { data, error, count } = await sb.from('posts')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (error) { tbody.innerHTML = `<tr><td colspan="5" class="board-empty">오류: ${error.message}</td></tr>`; return; }
+    totalPosts = count || 0;
+
+    if (!data || data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="board-empty">게시글이 없습니다. 첫 글을 작성해보세요!</td></tr>';
+    } else {
+      tbody.innerHTML = data.map((p, i) => {
+        const num     = totalPosts - from - i;
+        const isOwner = currentUser && currentUser.id === p.user_id;
+        return `<tr onclick="openView(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+          <td class="board-num">${num}</td>
+          <td class="board-title-cell">${p.title.replace(/</g,'&lt;')}</td>
+          <td class="board-author">${p.email}</td>
+          <td class="board-date">${new Date(p.created_at).toLocaleDateString('ko-KR')}</td>
+          <td>${isOwner ? `<button class="board-del" onclick="deletePost(event,'${p.id}')">삭제</button>` : ''}</td>
+        </tr>`;
+      }).join('');
+    }
+    renderPaging();
+    updateWriteBtn();
+  }
+
+  function renderPaging() {
+    const total = Math.ceil(totalPosts / PAGE_SIZE);
+    const paging = document.getElementById('boardPaging');
+    if (total <= 1) { paging.innerHTML = ''; return; }
+    paging.innerHTML = Array.from({length: total}, (_, i) => i + 1).map(p =>
+      `<button class="page-btn ${p===boardPage?'active':''}" onclick="goPage(${p})">${p}</button>`
+    ).join('');
+  }
+
+  function goPage(p) { boardPage = p; loadPosts(); }
 
   // ── Scroll Reveal ──
   const observer = new IntersectionObserver(entries => {
