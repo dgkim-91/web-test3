@@ -279,6 +279,64 @@
     }
     .contact-btn:hover { background: rgba(100,120,255,0.18); border-color: rgba(100,120,255,0.6); color: #fff; }
 
+    /* ── DASHBOARD ── */
+    .dashboard {
+      position: fixed; top: 50%; right: 1.5rem; transform: translateY(-50%);
+      width: 260px; z-index: 90;
+      display: flex; flex-direction: column; gap: 0.8rem;
+    }
+    .dash-card {
+      background: rgba(15,15,30,0.88);
+      border: 1px solid rgba(100,120,255,0.18);
+      border-radius: 16px; padding: 1.1rem 1.2rem;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+    .dash-card-title {
+      font-size: 0.72rem; color: #6478ff;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 0.8rem; font-weight: 600;
+    }
+    /* 사용자 카드 */
+    .dash-user-row { display: flex; align-items: center; gap: 0.7rem; }
+    .dash-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #6478ff, #00c8b4);
+      display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+    }
+    .dash-user-email { font-size: 0.8rem; color: #c0c8e8; word-break: break-all; }
+    .dash-login-msg { font-size: 0.85rem; color: #8890cc; text-align: center; }
+    .dash-login-link {
+      display: block; margin-top: 0.6rem; text-align: center;
+      font-size: 0.82rem; color: #6478ff; cursor: pointer; text-decoration: underline;
+    }
+    /* 통계 카드 */
+    .dash-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .dash-stat {
+      background: rgba(100,120,255,0.07); border-radius: 10px;
+      padding: 0.7rem; text-align: center;
+    }
+    .dash-stat-num { font-size: 1.5rem; font-weight: 700; color: #a0aaff; line-height: 1; }
+    .dash-stat-label { font-size: 0.72rem; color: #8890cc; margin-top: 0.3rem; }
+    /* 최근 게시글 */
+    .dash-post-item {
+      padding: 0.45rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer; transition: color 0.2s;
+    }
+    .dash-post-item:last-child { border-bottom: none; }
+    .dash-post-title { font-size: 0.83rem; color: #c0c8e8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dash-post-title:hover { color: #a0aaff; }
+    .dash-post-date { font-size: 0.73rem; color: #555577; margin-top: 0.1rem; }
+    .dash-empty { font-size: 0.82rem; color: #555577; text-align: center; padding: 0.5rem 0; }
+    /* 글쓰기 버튼 */
+    .dash-write {
+      width: 100%; padding: 0.6rem; border-radius: 10px; border: none;
+      background: linear-gradient(135deg, #6478ff, #00c8b4);
+      color: #fff; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+    }
+    .dash-write:hover { opacity: 0.85; }
+    @media (max-width: 1100px) { .dashboard { display: none; } }
+
     /* ── FOOTER ── */
     footer { text-align: center; padding: 2rem; color: #444466; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.05); }
 
@@ -416,6 +474,39 @@
   </div>
 </section>
 
+<!-- DASHBOARD -->
+<aside class="dashboard" id="dashboard">
+  <!-- 사용자 카드 -->
+  <div class="dash-card" id="dashUserCard">
+    <div class="dash-card-title">👤 사용자</div>
+    <div class="dash-login-msg">로그인하시면<br>더 많은 기능을 이용할 수 있습니다.</div>
+    <span class="dash-login-link" onclick="openModal()">로그인 / 회원가입</span>
+  </div>
+  <!-- 통계 카드 -->
+  <div class="dash-card">
+    <div class="dash-card-title">📊 통계</div>
+    <div class="dash-stats">
+      <div class="dash-stat">
+        <div class="dash-stat-num" id="dashPostCount">-</div>
+        <div class="dash-stat-label">게시글</div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat-num" id="dashMsgCount">-</div>
+        <div class="dash-stat-label">방명록</div>
+      </div>
+    </div>
+  </div>
+  <!-- 최근 게시글 -->
+  <div class="dash-card">
+    <div class="dash-card-title">📋 최근 게시글</div>
+    <div id="dashRecentPosts"><div class="dash-empty">로딩 중...</div></div>
+  </div>
+  <!-- 글쓰기 버튼 (로그인 시) -->
+  <div class="dash-card" id="dashWriteCard" style="display:none; padding: 0.7rem;">
+    <button class="dash-write" onclick="openWrite()">✏️ 게시글 작성</button>
+  </div>
+</aside>
+
 <!-- WRITE MODAL -->
 <div class="modal-overlay" id="writeOverlay">
   <div class="write-modal">
@@ -499,6 +590,7 @@
     renderGbForm();
     loadMessages();
     loadPosts();
+    loadDashboard();
   });
 
   function updateNav() {
@@ -577,7 +669,7 @@
       email:   currentUser.email,
       content
     });
-    if (!error) { document.getElementById('gbText').value = ''; loadMessages(); }
+    if (!error) { document.getElementById('gbText').value = ''; loadMessages(); loadDashboard(); }
     else        { alert('오류: ' + error.message); }
   }
 
@@ -594,6 +686,53 @@
         </div>
         <div class="gb-content">${m.content.replace(/</g,'&lt;')}</div>
       </div>`).join('');
+  }
+
+  // ── Dashboard ──
+  async function loadDashboard() {
+    // 사용자 카드
+    const userCard = document.getElementById('dashUserCard');
+    const writeCard = document.getElementById('dashWriteCard');
+    if (currentUser) {
+      userCard.innerHTML = `
+        <div class="dash-card-title">👤 사용자</div>
+        <div class="dash-user-row">
+          <div class="dash-avatar">😊</div>
+          <div class="dash-user-email">${currentUser.email}</div>
+        </div>`;
+      writeCard.style.display = 'block';
+    } else {
+      userCard.innerHTML = `
+        <div class="dash-card-title">👤 사용자</div>
+        <div class="dash-login-msg">로그인하시면<br>더 많은 기능을 이용할 수 있습니다.</div>
+        <span class="dash-login-link" onclick="openModal()">로그인 / 회원가입</span>`;
+      writeCard.style.display = 'none';
+    }
+
+    // 통계
+    const [{ count: postCount }, { count: msgCount }] = await Promise.all([
+      sb.from('posts').select('*', { count: 'exact', head: true }),
+      sb.from('messages').select('*', { count: 'exact', head: true })
+    ]);
+    document.getElementById('dashPostCount').textContent = postCount ?? 0;
+    document.getElementById('dashMsgCount').textContent  = msgCount  ?? 0;
+
+    // 최근 게시글
+    const { data: recent } = await sb.from('posts').select('id,title,created_at').order('created_at', { ascending: false }).limit(5);
+    const recentEl = document.getElementById('dashRecentPosts');
+    if (!recent || recent.length === 0) {
+      recentEl.innerHTML = '<div class="dash-empty">게시글이 없습니다.</div>';
+    } else {
+      recentEl.innerHTML = recent.map(p => `
+        <div class="dash-post-item" onclick="scrollToBoard()">
+          <div class="dash-post-title">${p.title.replace(/</g,'&lt;')}</div>
+          <div class="dash-post-date">${new Date(p.created_at).toLocaleDateString('ko-KR')}</div>
+        </div>`).join('');
+    }
+  }
+
+  function scrollToBoard() {
+    document.getElementById('board').scrollIntoView({ behavior: 'smooth' });
   }
 
   // ── Board ──
@@ -632,6 +771,7 @@
     closeWrite();
     boardPage = 1;
     loadPosts();
+    loadDashboard();
   }
 
   async function deletePost(e, id) {
