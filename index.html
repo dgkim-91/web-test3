@@ -18,6 +18,18 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     .nav-logo { font-weight: 700; font-size: 1.1rem; color: #a0aaff; }
+    .nav-menu { display: flex; gap: 1.8rem; }
+    .nav-menu a {
+      font-size: 0.9rem; color: #8890cc; text-decoration: none;
+      transition: color 0.2s; position: relative; padding-bottom: 2px;
+    }
+    .nav-menu a::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 1px; background: #6478ff; transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+    .nav-menu a:hover { color: #fff; }
+    .nav-menu a:hover::after { transform: scaleX(1); }
     .nav-right { display: flex; align-items: center; gap: 1rem; }
     #userEmail { font-size: 0.85rem; color: #8890cc; }
     .nav-btn {
@@ -211,7 +223,11 @@
     /* ── FOOTER ── */
     footer { text-align: center; padding: 2rem; color: #444466; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.05); }
 
-    @media (max-width: 600px) { .hero h1 { font-size: 2.2rem; } .about-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      .nav-menu { display: none; }
+      .hero h1 { font-size: 2.2rem; }
+      .about-grid { grid-template-columns: 1fr; }
+    }
     .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
   </style>
@@ -221,6 +237,14 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">김덕건 · Portfolio</div>
+  <div class="nav-menu">
+    <a href="#hero">홈</a>
+    <a href="#about">소개</a>
+    <a href="#skills">기술</a>
+    <a href="#career">경력</a>
+    <a href="#guestbook">방명록</a>
+    <a href="#contact">연락처</a>
+  </div>
   <div class="nav-right">
     <span id="userEmail"></span>
     <button class="nav-btn" id="loginBtn" onclick="openModal()">로그인 / 회원가입</button>
@@ -251,7 +275,7 @@
 </div>
 
 <!-- HERO -->
-<div class="hero">
+<div class="hero" id="hero">
   <div class="avatar">👨‍💻</div>
   <h1>김덕건</h1>
   <p class="subtitle">Developer</p>
@@ -264,7 +288,7 @@
 </div>
 
 <!-- ABOUT -->
-<section class="reveal">
+<section class="reveal" id="about">
   <h2 class="section-title">👤 기본 정보</h2>
   <div class="about-grid">
     <div class="about-card"><div class="label">이름</div><div class="value">김덕건</div></div>
@@ -284,7 +308,7 @@
 </section>
 
 <!-- SKILLS -->
-<section class="reveal" style="padding-top:0;">
+<section class="reveal" id="skills" style="padding-top:0;">
   <h2 class="section-title">🛠 기술 스택</h2>
   <div class="skills-list">
     <div class="skill-item">
@@ -311,7 +335,7 @@
 </section>
 
 <!-- CAREER -->
-<section class="reveal" style="padding-top:0;">
+<section class="reveal" id="career" style="padding-top:0;">
   <h2 class="section-title">📌 경력 타임라인</h2>
   <div class="timeline">
     <div class="tl-item">
@@ -333,7 +357,7 @@
 </section>
 
 <!-- GUESTBOOK -->
-<section class="reveal" style="padding-top:0;">
+<section class="reveal" id="guestbook" style="padding-top:0;">
   <h2 class="section-title">📝 방명록</h2>
   <div id="gbFormWrap">
     <div class="gb-login-notice">로그인 후 방명록을 남길 수 있습니다.</div>
@@ -344,7 +368,7 @@
 </section>
 
 <!-- CONTACT -->
-<section class="reveal" style="padding-top:0; padding-bottom:6rem;">
+<section class="reveal" id="contact" style="padding-top:0; padding-bottom:6rem;">
   <h2 class="section-title">📬 연락처</h2>
   <div class="contact-wrap">
     <a class="contact-btn" href="mailto:dgkim91@gmail.com">📧 dgkim91@gmail.com</a>
